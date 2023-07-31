@@ -14,6 +14,10 @@ body {
   background-color: #09266a;
 }
 
+.hide {
+	display: none;
+}
+
 #canvas {
 	position: fixed;
 	top: 0;

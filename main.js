@@ -3,21 +3,7 @@ class GradientAnimation {
     this.cnv        = document.querySelector(`#canvas`);
     this.ctx        = this.cnv.getContext(`2d`);
 
-		this.circlesData = [
-			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
-			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
-			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
-			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
-			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
-			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
-			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
-			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
-			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
-			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
-			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
-			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
-			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
-			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
+		this.colors = [
 			{color1: "hsla(222, 91%, 42%, 1)", color2: "hsla(220, 90%, 34%, 0)"},
 			{color1: "hsla(238, 100%, 6%, 1)", color2: "hsla(253, 100%, 8%, 0)"},
 		]
@@ -32,25 +18,44 @@ class GradientAnimation {
       this.createCircles();
     })();
     this.drawAnimation();
-
   }
+
+	setSpeed(newSpeed) {
+		this.speed = newSpeed;
+	}
+
+	setAmount(newAmount) {
+		this.circlesNum = newAmount;
+		this.createCircles();
+	}
+
+	setSize(newSize) {
+		this.minRadius = newSize;
+		this.maxRadius = newSize;
+		this.createCircles();
+	}
+
   setCanvasSize() {
     this.w = this.cnv.width  = innerWidth * devicePixelRatio;
     this.h = this.cnv.height = innerHeight * devicePixelRatio;
     this.ctx.scale(devicePixelRatio, devicePixelRatio)
   }
+
   createCircles() {
     this.circles = [];
     for (let i = 0 ; i < this.circlesNum ; ++i) {
-      this.circles.push(new Circle(this.w, this.h, this.minRadius, this.maxRadius, this.circlesData[i]));
+      this.circles.push(new Circle(this.w, this.h, this.minRadius, this.maxRadius, this.colors[i % 2]));
     }
   }
+
   drawCircles() {
     this.circles.forEach(circle => circle.draw(this.ctx, this.speed));
   }
+
   clearCanvas() {
     this.ctx.clearRect(0, 0, this.w, this.h); 
   }
+
   drawAnimation() {
     this.clearCanvas();
     this.drawCircles();
@@ -84,5 +89,33 @@ class Circle {
 }
 
 window.onload = () => {
-  new GradientAnimation();
+	const section1 = document.querySelector("#section1");
+	const hideTextCheckbox = document.querySelector("#hideText");
+	const speedInput = document.querySelector("#speed");
+	const amountInput = document.querySelector("#amount");
+	const sizeInput = document.querySelector("#size");
+
+	hideTextCheckbox.addEventListener("change", (event) => {
+		section1.classList.toggle("hide")
+	});
+
+  const mainGradient = new GradientAnimation();
+
+	speedInput.addEventListener("input", (event) => {
+		if (event.target.value && event.target.value !== 0) {
+			mainGradient.setSpeed(+event.target.value)
+		}
+	});
+
+	amountInput.addEventListener("input", (event) => {
+		if (event.target.value && event.target.value !== 0) {
+			mainGradient.setAmount(+event.target.value)
+		}
+	});
+
+	sizeInput.addEventListener("input", (event) => {
+		if (event.target.value && event.target.value !== 0) {
+			mainGradient.setSize(+event.target.value)
+		}
+	});
 }
